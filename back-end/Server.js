@@ -108,7 +108,7 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.get("/questions", authenticateToken, async (req, res) => {
+app.get("/questions", async (req, res) => {
   try {
     const questions = await question.find();
 
@@ -119,7 +119,7 @@ app.get("/questions", authenticateToken, async (req, res) => {
   }
 });
 
-app.post("/question", authenticateToken, async (req, res) => {
+app.post("/question", async (req, res) => {
   const { question_text, user_id } = req.body;
 
   try {
@@ -135,7 +135,7 @@ app.post("/question", authenticateToken, async (req, res) => {
   }
 });
 
-app.delete("/question/:id", authenticateToken, async (req, res) => {
+app.delete("/question/:id", async (req, res) => {
   const questionId = req.params.id;
 
   try {
@@ -154,7 +154,7 @@ app.delete("/question/:id", authenticateToken, async (req, res) => {
   }
 });
 
-app.get("/question/:id/answers", authenticateToken, async (req, res) => {
+app.get("/question/:id/answers", async (req, res) => {
   const questionId = req.params.id;
 
   try {
@@ -167,7 +167,7 @@ app.get("/question/:id/answers", authenticateToken, async (req, res) => {
   }
 });
 
-app.post("/question/:id/answers", authenticateToken, async (req, res) => {
+app.post("/question/:id/answer", async (req, res) => {
   const { answer_text, user_id } = req.body;
   const questionId = req.params.id;
 
@@ -185,7 +185,7 @@ app.post("/question/:id/answers", authenticateToken, async (req, res) => {
   }
 });
 
-app.delete("/answer/:id", authenticateToken, async (req, res) => {
+app.delete("/answer/:id", async (req, res) => {
   const answerId = req.params.id;
 
   try {
