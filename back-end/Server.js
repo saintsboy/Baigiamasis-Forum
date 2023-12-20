@@ -35,14 +35,14 @@ const user = mongoose.model("User", {
 const question = mongoose.model("Question", {
   question_text: String,
   date: Date,
-  user_id: Number,
+  user_id: String,
 });
 
 const answer = mongoose.model("Answer", {
   answer_text: String,
   date: Date,
   gained_likes_number: Number,
-  question_id: Number,
+  question_id: String,
 });
 
 app.post("/register", async (req, res) => {
@@ -162,7 +162,7 @@ app.get("/question/:id/answers", async (req, res) => {
 
     res.status(200).json({ answers });
   } catch (error) {
-    console.error(error);
+    console.error(error, "answers");
     res.status(500).json({ error: "server error" });
   }
 });
@@ -180,7 +180,7 @@ app.post("/question/:id/answer", async (req, res) => {
 
     res.status(200).json({ answer: newAnswer });
   } catch (error) {
-    console.error(error);
+    console.error(error, "answer");
     res.status(500).json({ error: "server error" });
   }
 });
@@ -201,6 +201,35 @@ app.delete("/answer/:id", async (req, res) => {
     res.status(500).json({ error: "server error" });
   }
 });
+
+question.aggregate([
+  {
+    $lookup: {
+      from: "answers",
+      localField: "_id",
+      foreignField: "question_id",
+      as: "exam",
+    },
+  },
+  {
+    $project: {
+      _id: 1,
+      question_text: 1,
+      user_id: 1,
+      answers: {
+        _id: 1,
+        answer_text: 1,
+        user_id: 1,
+      },
+    },
+  },
+])
+  .then((result) => {
+    console.log(result);
+  })
+  .catch((error) => {
+    console.error(error);
+  });
 
 function authenticateToken(req, res, next) {
   const authHeader = req.headers["authorization"];
