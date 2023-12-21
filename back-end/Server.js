@@ -3,8 +3,10 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const cors = require("cors");
 
 const app = express();
+app.use(cors());
 const port = 3000;
 
 app.get("/", (req, res) => {
@@ -202,28 +204,29 @@ app.delete("/answer/:id", async (req, res) => {
   }
 });
 
-question.aggregate([
-  {
-    $lookup: {
-      from: "answers",
-      localField: "_id",
-      foreignField: "question_id",
-      as: "exam",
-    },
-  },
-  {
-    $project: {
-      _id: 1,
-      question_text: 1,
-      user_id: 1,
-      answers: {
-        _id: 1,
-        answer_text: 1,
-        user_id: 1,
+question
+  .aggregate([
+    {
+      $lookup: {
+        from: "answers",
+        localField: "_id",
+        foreignField: "question_id",
+        as: "exam",
       },
     },
-  },
-])
+    {
+      $project: {
+        _id: 1,
+        question_text: 1,
+        user_id: 1,
+        answers: {
+          _id: 1,
+          answer_text: 1,
+          user_id: 1,
+        },
+      },
+    },
+  ])
   .then((result) => {
     console.log(result);
   })
