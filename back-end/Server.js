@@ -204,36 +204,6 @@ app.delete("/answer/:id", async (req, res) => {
   }
 });
 
-question
-  .aggregate([
-    {
-      $lookup: {
-        from: "answers",
-        localField: "_id",
-        foreignField: "question_id",
-        as: "exam",
-      },
-    },
-    {
-      $project: {
-        _id: 1,
-        question_text: 1,
-        user_id: 1,
-        answers: {
-          _id: 1,
-          answer_text: 1,
-          user_id: 1,
-        },
-      },
-    },
-  ])
-  .then((result) => {
-    console.log(result);
-  })
-  .catch((error) => {
-    console.error(error);
-  });
-
 function authenticateToken(req, res, next) {
   const authHeader = req.headers["authorization"];
   const token = authHeader.split(" ")[1];
